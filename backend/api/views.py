@@ -1,29 +1,24 @@
 import hashlib
 
 from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from django.http import HttpResponse
-from rest_framework import mixins, viewsets, status
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.filters import RecipeFilter, IngredientFilter
-from api.serializers import (
-    RecipeSerializer,
-    RecipeCreateSerializer,
-    TagSerializer,
-    IngredintsReadSerializer,
-    RecipeReadSerializer
-)
+from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import CustomPagination
 from api.permissions import IsAdminOrAuthorOrReadOnly
-from recipes.models import (
-    Recipe, Ingredient, Tag, Favorite, ShoppingCart, IngredientsInRecipes
-)
+from api.serializers import (IngredintsReadSerializer, RecipeCreateSerializer,
+                             RecipeReadSerializer, RecipeSerializer,
+                             TagSerializer)
+from recipes.models import (Favorite, Ingredient, IngredientsInRecipes, Recipe,
+                            ShoppingCart, Tag)
 
 
 class TagViewSet(

@@ -167,7 +167,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         if 'tags' not in validated_data:
             raise serializers.ValidationError(
                 {'tags': 'This field is required and cannot be empty.'}
-                )
+            )
         instance.name = validated_data.get('name', instance.name)
         instance.text = validated_data.get('text', instance.text)
         instance.cooking_time = validated_data.get(
@@ -253,7 +253,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         if user.is_authenticated:
             return Favorite.objects.filter(user=user, recipe=obj).exists()
         return False
-
 
 
 class SubscriptionsSerializer(serializers.ModelSerializer):

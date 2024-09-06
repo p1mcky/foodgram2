@@ -109,8 +109,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False,
             methods=['get'],
-            permission_classes=[IsAuthenticated]
-        )
+            permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request, **kwargs):
         file_name = 'shopping_cart.txt'
 

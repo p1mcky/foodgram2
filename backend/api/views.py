@@ -4,7 +4,7 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
-from rest_framework import filters, mixins, viewsets, status
+from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -13,11 +13,14 @@ from rest_framework.views import APIView
 
 from api.filters import RecipeFilter, IngredientFilter
 from api.serializers import (
-    RecipeSerializer, RecipeCreateSerializer,
-    TagSerializer, IngredintsReadSerializer, RecipeReadSerializer
+    RecipeSerializer,
+    RecipeCreateSerializer,
+    TagSerializer,
+    IngredintsReadSerializer,
+    RecipeReadSerializer
 )
 from api.pagination import CustomPagination
-from api.permissions import IsAdminOrAuthorOrReadOnly, IsAdminOrReadOnly
+from api.permissions import IsAdminOrAuthorOrReadOnly
 from recipes.models import (
     Recipe, Ingredient, Tag, Favorite, ShoppingCart, IngredientsInRecipes
 )
@@ -86,7 +89,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 obj.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             return Response(status=status.HTTP_400_BAD_REQUEST)
-    
+
     @action(detail=True,
             methods=['post', 'delete'],
             permission_classes=[IsAuthenticated]
@@ -104,10 +107,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
     def shopping_cart(self, request, **kwargs):
         return self.toggle_recipe_status(
-            request, ShoppingCart,
+            request,
+            ShoppingCart,
             **kwargs
         )
-    
+
     @action(
             detail=False, methods=['get'], permission_classes=[IsAuthenticated]
         )

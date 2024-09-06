@@ -22,9 +22,9 @@ class UserViewSet(UserViewSet):
     permission_classes = [AllowAny]
 
     @action(
-            detail=False,
-            methods=['get'],
-            permission_classes=[IsAuthenticated]
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAuthenticated]
     )
     def me(self, request):
         serializer = CustomUserSerializer(request.user)
@@ -40,14 +40,15 @@ class UserViewSet(UserViewSet):
         )
         return self.get_paginated_response(serializer.data)
 
-    @action(detail=True,
-            methods=['post', 'delete'],
-            permission_classes=[IsAuthenticated]
-        )
+    @action(
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated]
+    )
     def subscribe(self, request, **kwargs):
         user = self.request.user
         author = get_object_or_404(User, id=kwargs['id'])
-        
+
         if request.method == 'POST':
             if Subscribe.objects.filter(user=user, author=author).exists():
                 return Response(
@@ -65,7 +66,10 @@ class UserViewSet(UserViewSet):
             try:
                 subscription = Subscribe.objects.get(user=user, author=author)
             except Subscribe.DoesNotExist:
-                return Response({'detail': 'Вы не подписаны на этого автора!'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'detail': 'Вы не подписаны на этого автора!'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             subscription.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -79,7 +83,9 @@ class UserAvatarViewSet(APIView):
         user = request.user
         if 'avatar' not in request.data:
             return Response({'error': 'Avatar field is required'}, status=400)
-        serializer = self.serializer_class(user, data=request.data, partial=True)
+        serializer = self.serializer_class(
+            user, data=request.data, partial=True
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

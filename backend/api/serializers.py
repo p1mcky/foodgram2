@@ -73,6 +73,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     def get_measurement_unit(self, obj):
         return obj.ingredient.measurement_unit
 
+
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
 
@@ -92,9 +93,15 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
-            'id', 'ingredients', 'tags', 'author', 'image', 'name', 'text',
+            'id',
+            'ingredients',
+            'tags',
+            'author',
+            'image',
+            'name',
+            'text',
             'cooking_time'
-            )
+        )
         extra_kwargs = {
             'name': {'required': True},
             'image': {'required': True},
@@ -105,7 +112,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ingredients = value
         if not ingredients:
             raise serializers.ValidationError('Ingredients are required')
-        
+
         list_of_ingredients = []
         for ingredient in ingredients:
             if ingredient['id'] in list_of_ingredients:
@@ -116,7 +123,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                     'Amount must be greater than 0'
                 )
         return value
-    
+
     def validate_tags(self, value):
         tags = value
         if not tags:
@@ -127,7 +134,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('Tag already exists')
             list_of_tags.append(tag.id)
         return value
-    
+
     def validate_cooking_time(self, value):
         if value < 1 or value is None:
             raise serializers.ValidationError(
@@ -183,7 +190,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 ingredient_instance = get_object_or_404(
                     Ingredient, pk=ingredient_data.get('id').id
                 )
-                
                 IngredientsInRecipes.objects.create(
                     recipe=instance,
                     ingredient=ingredient_instance,
@@ -191,7 +197,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 )
 
         return instance
-    
+
     def to_representation(self, instance):
         request = self.context.get('request')
         context = {'request': request}
@@ -282,12 +288,18 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
             try:
                 limit = int(limit)
                 if limit < 0:
-                    raise serializers.ValidationError('recipes_limit must be a non-negative integer.')
+                    raise serializers.ValidationError(
+                        'recipes_limit must be a non-negative integer.'
+                    )
                 recipes = recipes[:limit]
             except ValueError:
-                raise serializers.ValidationError('recipes_limit must be an integer.')
+                raise serializers.ValidationError(
+                    'recipes_limit must be an integer.'
+                )
 
-        serializer = RecipeReadSerializer(recipes, many=True, context={'request': request})
+        serializer = RecipeReadSerializer(
+            recipes, many=True, context={'request': request}
+        )
         return serializer.data
 
 

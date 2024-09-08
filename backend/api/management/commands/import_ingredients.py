@@ -16,7 +16,7 @@ class Command(BaseCommand):
         with open(file_path, newline='', encoding='utf-8') as f:
             reader = csv.reader(f)
             for row in reader:
-                status, created = Ingredient.objects.update_or_create(
+                Ingredient.objects.update_or_create(
                     name=row[0],
                     measurement_unit=row[1]
                 )

@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission
 
 
@@ -14,7 +15,6 @@ class IsAdminOrAuthorOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        elif request.user.is_superuser:
+        if request.user == obj.author or request.user.is_staff:
             return True
-        elif request.user == obj.author:
-            return True
+        raise PermissionDenied('You are not the author of this recipe')

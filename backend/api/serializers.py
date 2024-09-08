@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
@@ -48,7 +47,6 @@ class CustomUserSerializer(UserSerializer):
             return Subscribe.objects.filter(user=self.context['request'].user,
                                             author=obj).exists()
         return False
-
 
 
 class TagSerializer(serializers.ModelSerializer):

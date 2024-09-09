@@ -302,8 +302,10 @@ class AvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('avatar',)
-    
+
     def validate(self, data):
         if 'avatar' not in data:
-            raise serializers.ValidationError({'avatar': 'Avatar cannot be empty'})
+            raise serializers.ValidationError(
+                {'avatar': 'Avatar cannot be empty'}
+            )
         return data

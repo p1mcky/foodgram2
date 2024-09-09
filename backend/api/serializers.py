@@ -56,7 +56,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class IngredintsReadSerializer(serializers.ModelSerializer):
+class IngredientReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
@@ -297,13 +297,13 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
 
 
 class AvatarSerializer(serializers.ModelSerializer):
-    avatar = Base64ImageField()
+    avatar = Base64ImageField(required=True)
 
     class Meta:
         model = User
         fields = ('avatar',)
-
-    def validate_avatar(self, value):
-        if not value:
-            raise serializers.ValidationError('Avatar cannot be empty')
-        return value
+    
+    def validate(self, data):
+        if 'avatar' not in data:
+            raise serializers.ValidationError({'avatar': 'Avatar cannot be empty'})
+        return data

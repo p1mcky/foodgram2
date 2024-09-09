@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import CustomPagination
 from api.permissions import IsAdminOrAuthorOrReadOnly
-from api.serializers import (IngredintsReadSerializer, RecipeCreateSerializer,
+from api.serializers import (IngredientReadSerializer, RecipeCreateSerializer,
                              RecipeReadSerializer, RecipeSerializer,
                              TagSerializer, CustomUserSerializer,
                              SubscriptionsSerializer, AvatarSerializer)
@@ -90,8 +90,6 @@ class UserAvatarViewSet(APIView):
 
     def put(self, request):
         user = request.user
-        if 'avatar' not in request.data:
-            return Response({'error': 'Avatar field is required'}, status=400)
         serializer = self.serializer_class(
             user, data=request.data, partial=True
         )
@@ -123,7 +121,7 @@ class IngredientViewSet(
 ):
     queryset = Ingredient.objects.all()
     permission_classes = (AllowAny, )
-    serializer_class = IngredintsReadSerializer
+    serializer_class = IngredientReadSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = IngredientFilter
 

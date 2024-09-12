@@ -25,5 +25,9 @@ urlpatterns = [
         views.RecipeShortLink.as_view(),
         name='recipe-get-link'
     ),
-    path('s/<str:short_code>/', views.RecipeRedirectView.as_view(), name='recipe-short-redirect'),
+    path(
+        's/<str:short_code>/',
+        views.RecipeRedirectView.as_view(),
+        name='recipe-short-redirect'
+    ),
 ]

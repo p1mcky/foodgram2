@@ -1,4 +1,3 @@
-import hashlib
 import short_url
 
 from django.conf import settings
@@ -24,7 +23,6 @@ from api.serializers import (IngredientReadSerializer, RecipeCreateSerializer,
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import Subscribe, User
-
 
 
 class UserViewSet(UserViewSet):

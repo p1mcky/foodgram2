@@ -1,9 +1,10 @@
 import hashlib
+import short_url
 
 from django.conf import settings
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import mixins, status, viewsets
@@ -23,6 +24,7 @@ from api.serializers import (IngredientReadSerializer, RecipeCreateSerializer,
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import Subscribe, User
+
 
 
 class UserViewSet(UserViewSet):
@@ -214,7 +216,22 @@ class RecipeShortLink(APIView):
         return Response({'short-link': short_link})
 
     def generate_short_link(self, recipe_id):
-        hash_object = hashlib.md5(str(recipe_id).encode())
-        short_id = hash_object.hexdigest()[:8]
-        base_url = settings.SHORT_LINK_BASE_URL
-        return f"{base_url}{short_id}"
+        domain = settings.SHORT_LINK_BASE_URL
+        short_id = short_url.encode_url(recipe_id)
+        return f"{domain}{short_id}"
+
+    def decode_short_link(self, short_code):
+        decoded_id = short_url.decode_url(short_code)
+        return decoded_id
+
+
+class RecipeRedirectView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, short_code):
+        try:
+            recipe_id = short_url.decode_url(short_code)
+        except ValueError:
+            return Response({"detail": "Invalid short link"}, status=404)
+
+        return redirect(f'/recipes/{recipe_id}/')
